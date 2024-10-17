@@ -48,7 +48,7 @@ exit
 sudo usermod -aG www-data ubuntu
 sudo chown -R ubuntu:www-data /var/www/
 cd /var/www
-git clone https://gitlab-cicd:glpat-rf25z_9EWaKyTi-xzX_j@gitlab.com/pyonecho86/laravel-todo.git
+git clone https://token-name:token-access-key@gitlab.com/pyonecho86/laravel-todo.git
 cd laravel-todo/
 composer install
 npm install
