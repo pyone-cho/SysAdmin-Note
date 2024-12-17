@@ -1,0 +1,94 @@
+								Install Unifi Controller on Raspberry pi 400
+
+
+	Download the necessary tools and raspbian operating system image
+		Raspberry Pi OS Lite (= without desktop interface) => 32-bit only (64-bit does not work)
+
+		https://www.raspberrypi.com/software/operating-systems/
+						(or)
+		Direct: https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2022-01-28/2022-01-28-raspios-bullseye-armhf-lite.zip
+		
+	write image your zip to memory with imager
+
+username : pi
+password : raspberry
+
+1. To Connect wifi
+1.1. Enter sudo raspi-config in a terminal window
+1.2. Select System Options
+1.3. Select Wireless Lan
+1.4. Choose location
+1.5. Enter SSID
+1.6. Enter Password
+1.7. Select OK
+1.8. Select Finish
+
+2. Enabling the Server
+2.1. Enter sudo raspi-config in a terminal window
+2.2. Select Interfacing Options
+2.3. Navigate to and select SSH
+2.4. Choose Yes
+2.5. Select Ok
+2.6. Choose Finish
+
+3. Update and Upgrade 
+3.1. sudo apt update && sudo apt upgrade -y
+
+###Note: If you can choose section 4, do not need 5 to 
+   
+4. Install with script(Use the script to save time)
+
+4.1. To install the UniFi controller and Pi Hole, copy/paste/run the following line of code:
+4.1.1. wget "https://github.com/SmokingCrop/UniFi/raw/master/install-unifi-pihole-English.sh" -O install-unifi-pihole.sh && chmod +x install-unifi-pihole.sh && ./install-unifi-pihole.sh
+									(Or)
+4.2. To only install the UniFi controller, copy/paste/run the following line of code:
+4.2.1. wget "https://github.com/SmokingCrop/UniFi/raw/master/install-unifi-pihole-English.sh" -O install-unifi-pihole.sh && chmod +x install-unifi-pihole.sh && ./install-unifi-pihole.sh no-pihole
+
+5. Change the default password
+5.1. pi@raspberrypi:~ $ passwd 
+	Changing password for pi. 
+	(current) UNIX password: 
+	Enter new UNIX password: 
+	Retype new UNIX password: 
+	passwd: password updated successfully
+	
+6. Add the Raspbian Stretch sources.list for MongoDB compatability
+6.1. echo 'deb http://archive.raspbian.org/raspbian stretch main contrib non-free rpi' | sudo tee /etc/apt/sources.list.d/raspbian_stretch_for_mongodb.list
+
+7. Download and install updates
+7.1.  sudo apt update && sudo apt full-upgrade -y && sudo apt autoremove -y && sudo apt-get autoclean -y
+
+8. Install Java 8
+8.1. sudo apt install openjdk-8-jre-headless jsvc libcommons-daemon-java -y
+
+9. Install haveged
+9.1.  sudo apt install haveged -y
+	(In order to fix the slow start-up of the UniFi controller, we have to install haveged.)
+
+10. Install MongoDB
+10.1. sudo apt install mongodb-server mongodb-clients -y
+
+
+11. Install the UniFi Controller
+11.1. wget https://dl.ui.com/unifi/7.0.23/unifi_sysvinit_all.deb
+11.2. sudo dpkg -i unifi_sysvinit_all.deb; sudo apt install -f -y
+
+
+
+12. Open Static IP
+12.1. nano /etc/dhcpcd.conf
+	interface eth0
+	static ip_address=192.168.x.x/24
+	static routers=192.168.x.1
+	static domain_name_servers=192.168.x.x 8.8.8.8 
+12.2. sudo reboot
+   
+   
+   
+   
+   
+   
+https://community.ui.com/questions/Step-By-Step-Tutorial-Guide-Raspberry-Pi-with-UniFi-Controller-and-Pi-hole-from-scratch-headless/e8a24143-bfb8-4a61-973d-0b55320101dc   
+   
+   
+

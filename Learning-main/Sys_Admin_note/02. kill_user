@@ -1,0 +1,3 @@
+who -u
+
+sudo kill [pid]

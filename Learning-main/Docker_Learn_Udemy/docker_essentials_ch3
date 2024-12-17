@@ -1,0 +1,48 @@
+##Introduction to Docker Images
+
+#Fact of Docker
+1. A stack of multiple layers created from Dockerfile instructions
+2. Each layer apart from the top one is R/O
+3. The top layer is R/W type
+4. Recognized by name or Image ID
+5. They are pushed to and can be pulled from Docker Hub
+
+A deep look into 
+/var/lib/docker/aufs/diff (AKA image)
+
+		|----->	CMD Layer
+		|----->	EXPOSE Layer
+Docker Image ---|----->	WORKDIR Layer
+		|----->	RUN Layer
+		|----->	Base Image Layer
+		|----->	bootfs
+
+##Learn Hands-on Containerization and Orchestration with Docker Ecosystem (Docker, Compose and Swarm)
+
+##Working with Docker Images | Search, List, Push, Pull
+
+#Docker search
+docker search python:3.6							//to show python and version. We check recommand and official with top view
+docker search registry							//If we don't know version, we know name
+docker search --filter "is-official=true" registry	//show only official
+docker search --format "table {{.Name}}\t{{.Description}}\t{{.IsOfficial}}" registry	//Search with choose header 
+
+#Docker Image List
+docker images ls								//Search images in host
+docker images ubuntu							//search ubuntu images in host
+docker images ubuntu:20.04						//search ubuntu images with version in host
+docker images --no-trunc ubuntu:20.04				//search full description ubuntu images with version in host
+
+#Docker pull
+docker image pull nginx:latest					//pull nginx latest version docker form docker hub
+docker image pull nginx:alpine					//pull nginx with alpine linux from docker hub
+docker image pull --all-tags nginx					//pull nginx all tags nginx for develop or testing
+
+#docker push
+goto hub.docker.com
+click Create Repository
+choose username to name space
+add repository name
+add descriptions 
+
+

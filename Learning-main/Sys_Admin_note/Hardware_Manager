@@ -1,0 +1,5 @@
+##Show Hardware as like as devicemanager
+
+sudo apt install dmidecode
+
+sudo dmidecode | more

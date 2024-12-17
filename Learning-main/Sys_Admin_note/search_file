@@ -1,0 +1,5 @@
+#Search all location
+find / -name "webpack.js"
+
+#Search current location
+find . -name "webpack.js"

@@ -1,0 +1,169 @@
+##Installing MySQL on server@localhost
+======================================
+#update server
+sudo apt update
+
+#install mysql-server
+sudo apt install -y mysql-server
+
+#Setting MySQL Configuration
+sudo mysql_secure_installation
+	
+	Press y|Y for Yes, any other key for No: y
+	
+	Please enter 0 = LOW, 1 = MEDIUM and 2 = STRONG: 2
+	New password: 
+	Re-enter new password: 
+	Estimated strength of the password: 100 
+
+	Do you wish to continue with the password provided?(Press y|Y for Yes, any other key for No) : y
+	
+	Remove anonymous users? (Press y|Y for Yes, any other key for No) : y
+	
+	Disallow root login remotely? (Press y|Y for Yes, any other key for No) : y
+	
+	Remove test database and access to it? (Press y|Y for Yes, any other key for No) : y
+	
+	Reload privilege tables now? (Press y|Y for Yes, any other key for No) : y
+	
+#db initializing
+mysqld --initialize
+	mysqld: Can't create directory '/var/lib/mysql/' (Errcode: 17 - File exists)
+
+#MySQL Configuration	
+sudo mysql
+	myasql> SELECT user,authentication_string,plugin,host FROM mysql.user;
+			+------------------+-------------------------------------------+-----------------------+-----------+
+			| user             | authentication_string                     | plugin                | host      |
+			+------------------+-------------------------------------------+-----------------------+-----------+
+			| root             |                                           | auth_socket           | localhost |
+			| mysql.session    | *THISISNOTAVALIDPASSWORDTHATCANBEUSEDHERE | mysql_native_password | localhost |
+			| mysql.sys        | *THISISNOTAVALIDPASSWORDTHATCANBEUSEDHERE | mysql_native_password | localhost |
+			| debian-sys-maint | *E60C3734CE54E48FE8B93FEC8F8ED5129D2102CF | mysql_native_password | localhost |
+			+------------------+-------------------------------------------+-----------------------+-----------+
+			4 rows in set (0.00 sec)
+	
+	mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'your_password';
+			Query OK, 0 rows affected (0.00 sec)
+	
+	mysql> FLUSH PRIVILEGES;
+			Query OK, 0 rows affected (0.00 sec)
+			
+	mysql> SELECT user,authentication_string,plugin,host FROM mysql.user;
+			+------------------+-------------------------------------------+-----------------------+-----------+
+			| user             | authentication_string                     | plugin                | host      |
+			+------------------+-------------------------------------------+-----------------------+-----------+
+			| root             | *9373A9D9F04188966FA8FDC6BD59D84E7A4943ED | mysql_native_password | localhost |
+			| mysql.session    | *THISISNOTAVALIDPASSWORDTHATCANBEUSEDHERE | mysql_native_password | localhost |
+			| mysql.sys        | *THISISNOTAVALIDPASSWORDTHATCANBEUSEDHERE | mysql_native_password | localhost |
+			| debian-sys-maint | *E60C3734CE54E48FE8B93FEC8F8ED5129D2102CF | mysql_native_password | localhost |
+			+------------------+-------------------------------------------+-----------------------+-----------+
+			4 rows in set (0.00 sec)
+
+	mysql> exit
+			Bye
+
+
+#Creating Other User
+mysql -u root -p
+Enter password:
+	mysql> CREATE USER 'test'@'localhost' IDENTIFIED BY 'your_password2';
+			Query OK, 0 rows affected (0.00 sec)
+	
+	mysql> GRANT ALL PRIVILEGES ON *.* TO 'test'@'localhost' WITH GRANT OPTION;
+			Query OK, 0 rows affected (0.00 sec)
+	
+	mysql> exit
+			Bye
+
+#Enable MySQL in startup
+systemctl status mysql.service
+	● mysql.service - MySQL Community Server
+	   Loaded: loaded (/lib/systemd/system/mysql.service; enabled; vendor preset: enabled)
+	   Active: active (running) since Sat 2021-08-14 08:09:23 UTC; 11min ago
+	 Main PID: 2866 (mysqld)
+	    Tasks: 29 (limit: 1140)
+	   CGroup: /system.slice/mysql.service
+		      └─2866 /usr/sbin/mysqld --daemonize --pid-file=/run/mysqld/mysqld.pid
+
+	Aug 14 08:09:22 ip-10-0-0-172 systemd[1]: Starting MySQL Community Server...
+	Aug 14 08:09:23 ip-10-0-0-172 systemd[1]: Started MySQL Community Server.
+	
+#Show MySQL Version
+sudo mysqladmin -p -u root version
+	Enter password: 
+	mysqladmin  Ver 8.42 Distrib 5.7.35, for Linux on x86_64
+	Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+	Oracle is a registered trademark of Oracle Corporation and/or its
+	affiliates. Other names may be trademarks of their respective
+	owners.
+
+	Server version		5.7.35-0ubuntu0.18.04.1
+	Protocol version	10
+	Connection		Localhost via UNIX socket
+	UNIX socket		/var/run/mysqld/mysqld.sock
+	Uptime:			12 min 9 sec
+
+	Threads: 1  Questions: 26  Slow queries: 0  Opens: 126  Flush tables: 1  Open tables: 119  Queries per second avg: 0.035
+	
+#Show DB Name (for .env)
+mysql -u test -p
+	Enter password: 
+	Welcome to the MySQL monitor.  Commands end with ; or \g.
+	Your MySQL connection id is 23
+	Server version: 5.7.35-0ubuntu0.18.04.1 (Ubuntu)
+
+	Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+	Oracle is a registered trademark of Oracle Corporation and/or its
+	affiliates. Other names may be trademarks of their respective
+	owners.
+
+	Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+	mysql> SHOW DATABASES;
+	+--------------------+
+	| Database           |
+	+--------------------+
+	| information_schema |
+	| mysql              |
+	| performance_schema |
+	| sys                |
+	+--------------------+
+	4 rows in set (0.00 sec)
+
+	mysql> exit
+	Bye
+	
+							-------------------End of sectiosn------------------
+							
+Mariadb without sudo
+$ > sudo mysql -uroot
+mysql > SELECT User, Host FROM mysql.user;
+mysql > DROP USER 'root'@'localhost';
+mysql > CREATE USER 'root'@'localhost' IDENTIFIED BY 'STRING-PASSWORD-NYA';
+mysql > GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
+mysql > FLUSH PRIVILEGES;
+mysql > exit
+$ > mysql -uroot
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

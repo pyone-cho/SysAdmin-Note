@@ -1,0 +1,187 @@
+https://gitlab.com/amitavroy7
+
+##Download laravel_project using docker
+docker run --rm -v $(pwd):/opt -w /opt shippingdocker/php-composer:latest composer create-project laravel/laravel MyCodebase
+
+##Create GitLab New Project
+
+
+##Add Gitlab repo
+cd your_project
+cd ..
+sudo chown -R $USER:$USER your_project
+cd your_project
+git add .
+rm -rf .git
+git init
+git branch main
+git remote add origin git@gitlab.com:Kryptoria01/laravelcicd.git
+git add .
+git commit -m "Initial Commit"
+git push -u origin main
+
+
+##Create EC2
+
+##Install docker and docker-compose
+sudo apt update
+sudo apt install docker docker-compose -y
+
+##User add deveoper(create password=>dev)
+sudo adduser developer
+
+##Add docker to sudo group
+sudo usermod -aG docker developer
+
+
+##Install Gitlab-runner
+goto gitlab your_project
+click setting
+click ci/cd
+expand Runners
+click Show runner installation instructions
+choose Environment=>Linux
+choose Architecture=>amd64
+# Download the binary for your system
+sudo curl -L --output /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
+
+# Give it permission to execute
+sudo chmod +x /usr/local/bin/gitlab-runner
+
+# Create a GitLab Runner user
+sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
+
+# Install and run as a service
+sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
+sudo gitlab-runner start
+
+##Check gitlab-renner
+sudo gitlab-runner list
+sudo gitlab-runner
+sudo gitlab-runner status
+
+#Command to register runner
+sudo gitlab-runner register --url https://gitlab.com/ --registration-token REGISTRATION_TOKEN
+
+Enter the GitLab instance URL (for example, https://gitlab.com/):
+[https://gitlab.com/]: 
+Enter the registration token:
+[7Lm2MDn9EWN4ZghAA4Bs]: 
+Enter a description for the runner:
+[ip-172-31-20-171]: GitlabCICDDemo
+Enter tags for the runner (comma-separated):
+master
+Enter optional maintenance note for the runner:
+master
+Registering runner... succeeded                     runner=7Lm2MDn9
+Enter an executor: docker+machine, docker-ssh+machine, kubernetes, custom, parallels, ssh, virtualbox, docker, docker-ssh, shell:
+docker
+Enter the default Docker image (for example, ruby:2.7):
+docker:stable
+Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
+
+##Check gitlab-runner
+sudo gitlab-runner list
+
+##Edit /etc/gitlab-runner/config.toml
+sudo vi /etc/gitlab-runner/config.toml
+concurrent = 1
+check_interval = 0
+
+[session_server]
+  session_timeout = 1800
+
+[[runners]]
+  name = "GitlabCICDDemo"
+  url = "https://gitlab.com/"
+  token = "C4NYBoWWAWU1gaFEBMJq"
+  executor = "docker"
+  [runners.custom_build_dir]
+  [runners.cache]
+    [runners.cache.s3]
+    [runners.cache.gcs]
+    [runners.cache.azure]
+  [runners.docker]
+    tls_verify = false
+    image = "docker:19.03.12"
+    privileged = true
+    disable_entrypoint_overwrite = false
+    oom_kill_disable = false
+    disable_cache = false
+    volumes = ["/certs/client", "/cache"]
+    shm_size = 0
+
+##Available specific runners
+goto gitlab your_project
+click setting
+click ci/cd
+expand Runners
+click edit for Available specific runners
+check Run untagged jobs
+click Save changes
+
+##Create ssh to developer
+su developer
+cd /home/developer/
+ssh-keygen -b 4096
+cat .ssh/id_rsa.pub >> .ssh/authorized_keys
+cd .ssh/
+cat id_rsa
+copy id_rsa
+
+#Add ssh key pair to gitlab
+goto gitlab your_project
+click setting
+click ci/cd
+expand variables
+Click "Add variable"
+Add Key => ID_RSA
+Add Value => Paste id_rsa key
+Choose Type => File
+Check mark Protact variable form Flags
+Click "Add variable"
+Click "Add variable"
+Add Key => SERVER_IP
+Add Value => x.x.x.x
+Choose Type => Variablr
+Check mark "Protact variable and "mask variable" form "Flags"
+Click "Add variable"
+Click "Add variable"
+Add Key => SERVER_IP
+Add Value => x.x.x.x
+Choose Type => Variable
+Check mark "Protact variable and "mask variable" form "Flags"
+Click "Add variable"
+Click "Add variable"
+Add Key => prodenv
+Add Value => copy and paste your .env
+Choose Type => File
+Check mark "Protact variable" form "Flags"
+Click "Add variable"
+
+#Add Tags data for deployment
+goto gitlab your_project
+click setting
+click ci/cd
+expand Runners
+click edit for Available specific runners
+Add data to Tags file below
+	master, prod_deployment
+
+##Check Piplines
+goto gitlab your_project
+Click CI/CD > Pipelines
+if your configuration bulid stag pass
+Click prod_deployment and run
+
+#Check container
+goto server with ssh
+docker container ls -all
+curl localhost:8080
+
+#Install nginx proxy server for docker
+
+
+
+
+

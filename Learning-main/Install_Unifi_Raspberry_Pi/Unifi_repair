@@ -1,0 +1,14 @@
+##auto backup location
+/var/lib/unifi/backup/autobackup/
+
+service unifi stops
+ervice mongodb stop
+sudo apt-get remove --purge unifi
+sudo apt-get remove --purge mongodb
+sudo rm -rf /usr/lib/unifi (didn't need to do this but some might)
+sudo  wget --no-certificate https://dl.ui.com/unifi/7.2.92/unifi_sysvinit_all.deb
+sudo  dpkg -i unifi_sysvinit_all.deb
+service unifi start
+
+
+

@@ -1,0 +1,32 @@
+vi /etc/netpaln/50-cloud-init.yaml
+
+# This file is generated from information provided by the datasource.  Changes
+# to it will not persist across an instance reboot.  To disable cloud-init's
+# network configuration capabilities, write a file
+# /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg with the following:
+# network: {config: disabled}
+network:
+    ethernets:
+        eth0:
+            dhcp4: false
+                #optional: true   
+            addresses: [192.168.96.9/24]
+            gateway4: 192.168.96.1
+            nameservers: 
+                addresses: [192.168.96.1, 8.8.8.8]
+    version: 2
+    wifis:
+        wlan0:
+            optional: true
+            access-points:
+            dhcp4: true    
+            access-points:
+                "SSID_name":
+                    hidden: true
+                    password: "WiFi_password"
+                    
+netplan -debug generate
+netplan try
+netpaln apply                    
+
+sudo reboot

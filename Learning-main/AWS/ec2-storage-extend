@@ -1,0 +1,43 @@
+###check volume 
+```bash
+sudo lsblk
+```
+###Check storage size
+```bash
+sudo df -h
+```
+###Check file system
+```bash
+sudo file -sL /dev/xvda1
+```
+
+###Modify your EBS volume
+On our Amazon EC2 dashboard, let’s click Volumes under the ELASTIC BLOCK STORE section on the left. Here, we need to select the volume attached to our instance and click Modify from the Actions menu. You can see the screenshot below.
+
+Let’s increase the volume size on the window opened. As an example, I will resize my EBS volume to 10GB.
+
+After clicking Modify, AWS will display an approval window to avoid unintended actions; click Yes on this window to continue. After that, a success message will be displayed for the start of the EBS volume resize operation, which you can ignore by clicking Close.
+
+##Extend OS partition
+###check volume
+```bash
+sudo lsblk
+```
+###Increase block size
+```bash
+sudo growpart /dev/xvda1
+```
+###check volume
+```bash
+sudo lsblk
+```
+###Increase storage size 
+sudo resize2fs /dev/xvda1
+
+###Check disck free
+```bash
+sudo df -h
+```
+
+Link:
+https://blog.shikisoft.com/increase-root-volume-of-ebs-backed-ec2/

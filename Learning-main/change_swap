@@ -1,0 +1,5 @@
+1. Turn off all running swap processes: swapoff -a
+2. Resize swap: sudo fallocate -l 1G /swapfile (change 1G to the gigabyte size you want it to be)
+3. CHMOD swap: sudo chmod 600 /swapfile
+4. Make file usable as swap: sudo mkswap /swapfile
+5. Active the swap file: sudo swapon /swapfile

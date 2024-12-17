@@ -1,0 +1,15 @@
+goto location of your file
+
+write Bellow command
+gs -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=setting -sOutputFile=output.pdf input.pdf
+
+Note: 	setting => /ebook		=> low quality
+		   /printer	=> mid quality
+		   /prepress  	=> High quality
+
+	input.pdf => Your original pdf
+	output.pdf => your desire pdf name
+	
+eg
+
+gs -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -sOutputFile=samplerev.pdf sample.pdf 

@@ -1,0 +1,28 @@
+How to install VPC Endpoint for Private EC2
+
+goto aws console
+Choose VPC
+Choose Endpoint
+Click Create Endpoint
+Fill "Desire Name" for "Name tag"
+Choose "AWS services" From "Service Category"
+Choose "com.amazonaws.us-east-2.ssm" from "Services"
+Choose "Your VPC" from "VPC"
+Select "Availability zone" and "Subnet ID"
+Select "Security group" form "Security Groups"
+Choose "Full access" form "Policy"
+Click "Create Endpoint"
+
+and
+
+Click Create Endpoint
+Fill "Desire Name" for "Name tag"
+Choose "AWS services" From "Service Category"
+Choose "com.amazonaws.us-east-2.ssmmessages" from "Services"
+Choose "Your VPC" from "VPC"
+Select "Availability zone" and "Subnet ID"
+Select "Security group" form "Security Groups"
+Choose "Full access" form "Policy"
+Click "Create Endpoint"
+
+

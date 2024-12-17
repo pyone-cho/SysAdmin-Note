@@ -1,0 +1,27 @@
+Create Logrotate
+
+1. Confirming Your Logrotate Version
+$ logrotate --version
+	Output
+	logrotate 3.19.0
+
+	Default mail command:       /usr/bin/mail
+	Default compress command:   /bin/gzip
+	Default uncompress command: /bin/gunzip
+	Default compress extension: .gz
+	Default state file path:    /var/lib/logrotate/status
+	ACL support:                yes
+	SELinux support:            yes
+
+
+ubuntu@tp-stg-api:/etc/logrotate.d$ cat tp-restful-api 
+/var/www/html/your_project/storage/logs/*.log {
+    daily
+    missingok
+    rotate 4
+    compress
+    notifempty
+    create 0755 www-data www-data
+    sharedscripts
+}
+

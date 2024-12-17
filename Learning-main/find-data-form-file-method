@@ -1,0 +1,3 @@
+find /media/kpc/120C9A870C9A660F/Users/HLZ/Desktop -type f -exec grep -l "2021-2022" {} \;
+
+type: find <path> -type f -exec grep -l "want-data" {} \;

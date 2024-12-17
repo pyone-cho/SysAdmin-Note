@@ -1,0 +1,149 @@
+#Ensure the English language pack is installed
+sudo apt-get -y install language-pack-en-base
+
+#Install Nginx
+sudo apt-get -y install nginx
+
+#Ensure the web server starts up and is running
+sudo systemctl stop nginx.service
+sudo systemctl start nginx.service
+
+##Configure Nginx to interpret .php files
+#php-fpm
+sudo apt-get -y install php-fpm
+sudo systemctl enable php7.4-fpm
+sudo systemctl start php7.4-fpm
+
+#Modify Nginx
+sudo vi /etc/nginx/sites-enabled/default
+
+#Add index.php to this line:
+index index.php index.html index.htm index.nginx-debian.html;
+
+#Activate PHP processing by un-commenting this this section. Note that we use the UNIX socket:
+# pass PHP scripts to FastCGI server
+#
+location ~ \.php$ {
+    include snippets/fastcgi-php.conf;
+    #
+    #       # With php-fpm (or other unix sockets):
+    fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+    #       # With php-cgi (or other tcp sockets):
+    #       fastcgi_pass 127.0.0.1:9000;
+}
+
+#Enable the hiding of .htaccess files
+# deny access to .htaccess files, if Apache's document root
+# concurs with nginx's one
+#
+location ~ /\.ht {
+    deny all;
+}
+
+#Reload the Nginx web server's configuration
+sudo systemctl reload nginx.service
+
+#Create a test .php file to confirm that it does work
+sudo vi /var/www/html/test.php
+<?php
+    phpinfo();
+?>
+
+#Navigate to http://127.0.0.1/test.php and see if the page display the PHP info.
+
+##Install MariaDB
+sudo apt-get -y install mariadb-server php-mysql
+sudo systemctl enable mariadb
+sudo systemctl restart mariadb
+sudo systemctl status mariadb
+
+#Disable strict mode
+sudo vi /etc/mysql/conf.d/disable_strict_mode.cnf
+[mysqld]
+sql_mode=IGNORE_SPACE,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+
+#Save the file and restart the MySQL Server
+sudo systemctl restart mariadb
+
+##Performance tune Nginx
+#Modify expiry date for certain files
+sudo vi /etc/nginx/sites-available/default	//(Add the following inside the server section:)
+location ~ ^/cake3/.+\.(jpg|jpeg|gif|png|ico|js|css)$ {
+    rewrite ^/cake3/rd_cake/webroot/(.*)$ /cake3/rd_cake/webroot/$1 break;
+    rewrite ^/cake3/rd_cake/(.*)$ /cake3/rd_cake/webroot/$1 break;
+    access_log off;
+    expires max;
+    add_header Cache-Control public;
+}
+
+#Reload Nginx:
+sudo systemctl reload nginx.service
+
+##Install RADIUSdesk
+#Required packages
+sudo apt-get -y install php-cli php-mysql php-gd php-curl php-xml php-mbstring php-intl git wget
+sudo systemctl restart php7.4-fpm
+
+#Check out the rdcore git repository.
+cd /var/www
+sudo git clone https://github.com/RADIUSdesk/rdcore.git
+
+#Create soft links
+cd /var/www/html
+sudo ln -s ../rdcore/rd ./rd
+sudo ln -s ../rdcore/cake3 ./cake3
+sudo ln -s ../rdcore/login ./login
+sudo ln -s ../rdcore/AmpConf/build/production/AmpConf ./conf_dev
+sudo ln -s ../rdcore/cake3/rd_cake/setup/scripts/reporting ./reporting
+
+#Change Ownerships
+sudo mkdir -p  /var/www/html/cake3/rd_cake/logs
+sudo mkdir -p /var/www/html/cake3/rd_cake/webroot/files/imagecache
+sudo mkdir -p /var/www/html/cake3/rd_cake/tmp
+sudo chown -R www-data. /var/www/html/cake3/rd_cake/tmp
+sudo chown -R www-data. /var/www/html/cake3/rd_cake/logs
+sudo chown -R www-data. /var/www/html/cake3/rd_cake/webroot/img/realms
+sudo chown -R www-data. /var/www/html/cake3/rd_cake/webroot/img/dynamic_details
+sudo chown -R www-data. /var/www/html/cake3/rd_cake/webroot/img/dynamic_photos
+sudo chown -R www-data. /var/www/html/cake3/rd_cake/webroot/img/access_providers
+sudo chown -R www-data. /var/www/html/cake3/rd_cake/webroot/img/hardwares
+sudo chown -R www-data. /var/www/html/cake3/rd_cake/webroot/files/imagecache
+
+##The Database
+sudo su
+mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root  mysql
+
+#Create an empty database called rd
+sudo su
+mysql -u root
+create database rd;
+GRANT ALL PRIVILEGES ON rd.* to 'rd'@'localhost' IDENTIFIED BY 'rd';
+GRANT ALL PRIVILEGES ON rd.* to 'rd'@'127.0.0.1' IDENTIFIED BY 'rd';
+exit;
+
+#Populate the database:
+sudo mysql -u root rd < /var/www/html/cake3/rd_cake/setup/db/rd.sql
+
+##Configure Nginx
+sudo vi /etc/nginx/sites-enabled/default
+server_name _;
+location /cake3/rd_cake/node-reports/submit_report.json {
+    try_files $uri $uri/ /reporting/reporting.php;
+}
+#add this block in server section
+location /cake3/rd_cake {
+   rewrite ^/cake3/rd_cake(.+)$ /cake3/rd_cake/webroot$1 break;
+   try_files $uri $uri/ /cake3/rd_cake/index.php$is_args$args;
+}
+
+#Reload the Nginx:
+sudo systemctl reload nginx
+
+##Important URLs
+sudo cp -R /var/www/html/rd/build/production/Rd/* /var/www/html/
+
+##Login Credentials
+Username: root Password: admin
+
+
+

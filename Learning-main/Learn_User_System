@@ -1,0 +1,136 @@
+User System in Linux
+	User system has two main categories. There are User System and Permission
+
+1. User System
+	There are (3) type of user system in linux.
+	 1. user (owner)
+	 2. group (created user in system)
+	 3. other (anonymous user)
+
+1.1 User
+	User is the owner of the file. If we crate new user in linux,also group will be created automatically.
+
+1.2 Group
+	Group is additional fact of user. This is special condition for file permission.
+
+1.3 Other
+	Other is the same condition of group. But we can't see this actually. This is logical.
+
+2. Permission
+	Permission is file permission control system.There are (3) attributes of permission in linux.
+	 1. Read (r = 4)
+	 2. Write (w = 2)
+	 3. execute (x = 1)
+
+3. File System
+	Every file and dirctory(call folder) link User System and Permission system.
+Example:
+	-rw-rw-r--  1 kpc kpc    11 Jan 19 23:13 README.md
+	-|---|---|--- |1| |kpc| |kpc| |11|  |jan 19 23:13| |README.md|
+	^  ^   ^   ^   ^    ^     ^     ^         ^            ^
+	|  |   |   |   |    |     |     |         |            |
+	1  2   3   4   5    6     7     8         9           10
+
+	1 = file or directory
+	2 = permission of user (or) owner
+	3 = permission of group
+	4 = permission of other user
+	5 = no. of content
+	6 = file owner name
+	7 = file usable group name
+	8 = file size
+	9 = created or modified date/time
+        10 = file name
+
+4. Useful commands for file system
+	useful command are:
+		-chmod
+		-chown
+		-chgrp
+
+4.1  (chmod) Changing file/directoy permissions
+	This section has two mode.
+	 1. Absolute(Numeric) mode
+	 2. Symbolic mode
+
+4.1.1 Absolute(numbric) mode
+	 sudo chmod <permission> <filename>
+	 sudo chmod 755 README.md
+	---------------------------------------------------
+        if We look file with "ls -alh" command
+	 -rwxr-xr-x  1 kpc kpc    11 Jan 19 23:13 README.md
+        ---------------------------------------------------
+
+4.1.2 Symbolic mode
+	---------------------------------
+	| Operator | description        |
+	---------------------------------
+	|    +     | add permission     |
+	|    -     | Remove permission  |
+	|    =     | set the permission |
+	--------------------------------
+	-------------------
+	|User Denotations |
+	-------------------
+	| u | user/owner  |
+	| g | group       |
+	| o | other       |
+	| a | all	  |
+	-------------------
+
+	 sudo chmod o=rwx README.md
+	---------------------------------------------------
+	if We look file with "ls -alh" command
+	 -rwxr-xrwx  1 kpc kpc    11 Jan 19 23:13 README.md
+	---------------------------------------------------
+	 sudo chmod o-wx README.md
+	---------------------------------------------------
+        if We look file with "ls -alh" command
+         -rwxr-xr--  1 kpc kpc    11 Jan 19 23:13 README.md
+        ---------------------------------------------------
+
+4.2 (chown) Change Ownership and user:group
+	 sudo chown <user> <filename>
+	 sudo chown root README.md
+	---------------------------------------------------
+        if We look file with "ls -alh" command
+         -rwxr-xr--  1 root kpc    11 Jan 19 23:13 README.md
+        ---------------------------------------------------
+	 sudo chown kpc:kpc README.md
+	---------------------------------------------------
+        if We look file with "ls -alh" command
+         -rwxr-xr--  1 kpc kpc    11 Jan 19 23:13 README.md
+        ---------------------------------------------------
+
+4.3 (chgrp) Chang group
+	 sudo chgrp root README.md
+	---------------------------------------------------
+        if We look file with "ls -alh" command
+         -rwxr-xr--  1 kpc root    11 Jan 19 23:13 README.md
+        ---------------------------------------------------
+
+5. Tips on Usergroup
+5.1 /etc/group
+	 /etc/group file has all the group of linux system
+
+5.2 groups command
+	 groups		//show the groups of linux system
+	---------------------------------------------------
+	kpc adm cdrom sudo dip plugdev lpadmin lxd sambashare
+	---------------------------------------------------
+
+5.3 newgrp
+	 newgrp	adm	//user group chnage by force
+	 touch test	//creat file
+	---------------------------------------------------
+        if We look file with "ls -alh test" command
+         -rw-rw-r--  1 kpc adm    11 Jan 19 23:13 test
+        ---------------------------------------------------
+Note: 2 groups cannot own the same file. But user can add multi group.
+
+5.4 Add Group
+	 sudo usermod -aG docker	//add user to docker group
+ 	 groups
+	---------------------------------------------------
+        kpc adm cdrom sudo dip plugdev lpadmin docker lxd sambashare
+        ---------------------------------------------------

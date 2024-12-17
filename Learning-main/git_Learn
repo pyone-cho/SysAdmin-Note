@@ -1,0 +1,161 @@
+##Install git
+sudo apt install git
+
+##git configuration
+git config --global user.name "Github_UserName"
+git config --global user.email "Github_Email"
+
+##git config file permission denied
+git config --global core.fileMode false	//file permission disable mode
+	If you cannot effect
+vi .git/config
+ filemode = true to filemode = false
+
+##git repo initializing (create folder and enter)
+mkdir test
+cd test
+git init
+
+##Create file, data fill and show status
+vi index.html
+git status
+
+##Add file to git and create commit
+git add .
+git commit -m "your desire commit"
+git branch -M main
+git remote add origin 
+git push origin main
+
+##Show version history
+git log --pretty=oneline
+
+##Tag version with number instead of hash
+git tab 0.1.0	//0.1.0 or your desire number
+
+##Change main to older version and via
+git checkout 0.1.0
+git checkout main
+-------------------------
+
+###Branch
+##Show branch, create brach and change branch
+git branch		//show branch
+git branch dev		//create branch
+git checkout dev	//change branch
+git checkout main	//change main branch(original)
+
+##git merge
+git checkout dev			//switch branch
+vi app.js				//create file
+git add .				//git add
+git commit -m "your desire commit"	//git commit
+git checkout main			//switch main branch
+git merge				//git merge
+
+----------------------------
+
+###Git Clone, Central repo (bare and cloud repo)
+##git clone
+mkdir test1				//make project folder
+cd test1				//enter test1
+git init				//crate repo
+vi index.html				//create file
+git add .				//git add
+git commit -m "your desire commit"	//git commit
+cd					//exit from test1
+git clone ./test1 test2			//git clone
+cd test1				//enter test1
+vi style.css				//create file
+git add .				//git add
+git commit -m "your desire commit"	//git commit
+cd ../test2				//switch test1 to test2
+git remote show origin			//show original repo
+git pull oringin main			//git pull for original main branch
+
+#Note: Can pull form origin but can't push clone to origin. So, we use bare repo
+
+##Bare repo (Central local repo)
+mkdir central		//make folder for central repo
+cd central		//enter central
+git init --bare		//create central repo but this repo store only version of clone repo
+cd 			//exit from bare
+git clone ./central app1	//clone app1 repo
+git clone ./central app2	//clone app2 repo
+cd app1				//enter app1 folder
+vi app.js			//crate file
+git add .			//git add
+git commit -m "your desire commit"	//git commit
+git push origin main		//push to main
+cd ../app2			//switch app2
+git pull origin main 		//git pull from app1 pass from bare
+vi index.html			
+git add .
+git commit -m "Your desire commit"
+git push origin main
+cd ../app1
+git push origin main
+#Note: sometime facing conflict code and resolve maual
+cd app1				//enter app1 folder
+echo "var app = {};" >> app.js	//fill code to app.js form app1
+git commit -am "your desire commit"	//git commit (not add cause already add)
+cd ../app2			//switch app2 folder
+echo "var app = []; >> app.js	//fil; code to app.js form app2
+git commit -am "your desire commit"	//
+git push origin main		//git push form app2 (OK)
+cd ../app1			//switch app1
+git push origin main		//git push from app2 (another person push already)
+git pull origin main		//git pull from app2 (conflict error)
+			(you choose desire line, other delete and save)
+git commit -am "conflict resolve"
+git push origin main
+
+-------------------------------------------
+
+##Github (cloud central repo)
+login Github			//in browser
+Create a new repository		//in browser
+mkdir learing			//make floder in local
+git init			//create repo
+touch README.md			//create file
+git add .			//git add
+git commit -m "first commit"	//git commit
+git branch -M main		//create git repo main branch name
+git remote add origin https://github.com/Kryptoria01/xxxxx.git
+#(Note: Before git push, you must be create personal access token with under link)
+https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
+git push -u origin main		//git push (you must be fill token instead of password)
+
+--------------------------------------------
+
+##Git branch rename
+git branch -m old_name new_name
+
+-------------------------------------------
+
+##Git branch delete
+git branch -d name
+
+-------------------------------------------
+
+##Ignore local file and folder form Git Repo
+touch .gitignore
+vi .gitignore		// Enter .gitignore and add ignore file and folder name line by line
+
+-------------------------------------------
+
+##Git Action
+
+-------------------------------------------
+
+##Git HEAD 		//The HEAD in Git is the pointer to the current branch reference, which is in turn a pointer to the last commit you made.
+git log			//Point last commit HEAD and the last second commit point HEAD~1
+git show HEAD		//Point last commit. Show changing file and entry data
+git show HEAD~1	//Point last second commit. Show changing file and entry data
+git difftool HEAD HEAD~1		//if you modified same file and add two commit, compare two file.
+
+  
+
+
+
+

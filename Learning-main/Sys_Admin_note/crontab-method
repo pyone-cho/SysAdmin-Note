@@ -1,0 +1,5 @@
+#check crontab (hourly,daily,weekly,monthly)
+cat /etc/crontab
+
+#Change crontab (hourly,daily,weekly,monthly)
+sudo vi /etc/crontab

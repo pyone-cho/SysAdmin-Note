@@ -1,0 +1,19 @@
+Session Manager
+
+1. Install Session Manager
+	Look at SSM_installation
+
+2. Create SSM Role
+	Look Create_IAM_Role_for_SSM
+
+3. Attach SSM Role to desire EC2
+
+4. If you connect privat EC2 without bastion or NAT
+	you must create 2 VPC Endpoint and restart EC2
+
+4. Search "System Manager" from "Services"
+	Click "Session Manager" from "Node Management"
+	Click "Start session"
+	Choose "Desire EC2" and Start session
+	
+

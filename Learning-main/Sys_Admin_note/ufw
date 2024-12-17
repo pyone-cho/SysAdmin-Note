@@ -1,0 +1,44 @@
+#Check Port from computer
+sudo lsof -i -P -n | grep -v ESTABLISHED
+sudo ss -tulwn | grep LISTEN
+
+#Check openssh server
+sudo apt list --installed | grep openssh-server
+
+#Install ssh
+sudo apt install openssh-server
+
+#Check UFW status details
+sudo ufw status verbose
+
+#Disable UFW
+sudo ufw disable
+
+#Enable UFW
+sudo ufw enable
+
+#Setting Up UFW Defult
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+#Open Port incoming and outgoing
+sudo ufw allow ssh
+
+#Open port only incoming but deny outgoing
+sudo ufw allow ssh
+sudo ufw deny out ssh
+
+#Open Port only outgoing but deny incoming
+sudo ufw deny ssh
+
+#Deny only outgoing and incoming
+sudo ufw deny out ssh
+
+#Show UFW Rule with number
+sudo ufw status numbered
+
+#Delete UFW Rule with rule_number
+sudo ufw delete rule_number
+
+#Reset UFW
+sudo ufw reset

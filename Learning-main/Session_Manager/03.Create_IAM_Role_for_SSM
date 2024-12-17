@@ -1,0 +1,13 @@
+1. Login AWS Management Console
+2. Choose IAM from Servics
+3. Click Role
+4. Click "Create Role"
+5. Choose bellow
+	choose "AWS service" from "Trusted entity type"
+	Choose "EC2" from "Use case"
+	Click "Next"
+6. Search and Choose "AmazonSSMFullAccess" from "Permissions policies"
+	Click Next
+7. Add "SSMFullAccess" to "Role name"
+	Click "Create Role"
+	

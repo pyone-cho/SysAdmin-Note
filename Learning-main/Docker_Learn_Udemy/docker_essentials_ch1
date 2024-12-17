@@ -1,0 +1,52 @@
+###Chapter1
+###Install Docker
+sudo apt-get remove docker docker-engine docker.io containerd runc	//uninstall old docker
+
+sudo apt-get update
+sudo apt-get install \
+ca-certificates \
+curl \
+gnupg \
+lsb-release			//add docker dependencies && related app
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg	//add gpg key
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+				//choose stable version
+
+sudo apt-get update
+sudo sudo apt-get install docker-ce docker-ce-cli containerd.io	//ce for communutiy edition (not ce (or) ee enterprice edition)
+sudo docker run hello-world	//test docker
+sudo docker run -it ubnuntu bash	//test ubuntu docker and terminal interactive mod
+
+##Optional Post-Installiation
+sudo groupadd docker		//create docker group
+sudo usermod -aG docker $USER	//add user to docker group
+
+##Uninstall Docker
+sudo apt-get purge docker-ce docker-ce-cli containerd.io	//uninstall docker
+sudo rm -rf /var/lib/docker					//remove docker
+sudo rm -rf /var/lib/containerd					//remove container
+
+##Configur Docker to start on boot
+#Enable
+sudo systemctl enable docker.service
+sudo systemctl enable containerd.service
+#Disable
+sudo systemctl disable docker.service
+sudo systemctl disable containerd.service
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+###Running nginx webserver as a container
+docker image pull nginx:latest		//docker pull form dockerhub
+docker images				//show docker images
+docker container run -itd --name web-server-nginx -p 8080:80 nginx:latest
+					//-itd => interactive demon mod
+					//-p 8080:80 => server port 8080 bind docker port 80
+
+docker ps 		//show running container
+docker ps -a		//show all container
+docker kill "NAME"	//stop container
+docker rm "NAME"	//remove container
+

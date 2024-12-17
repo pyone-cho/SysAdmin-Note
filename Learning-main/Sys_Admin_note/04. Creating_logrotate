@@ -1,0 +1,19 @@
+crating logrotate
+##Show logrorate
+logrotate --version
+
+#enter logrotate
+cd /etc/logrotate.d
+
+#Create logrotate for app
+sudo vi your_app
+/var/www/html/your_app/storage/logs/*.log {
+    daily
+    missingok
+    rotate 4
+    compress
+    notifempty
+    create 0755 www-data www-data
+    sharedscripts
+}
+

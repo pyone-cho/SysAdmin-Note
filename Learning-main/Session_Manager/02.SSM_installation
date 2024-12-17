@@ -1,0 +1,19 @@
+https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-linux
+
+##Install the Session Manager plugin on Ubuntu Server
+1.Download the Session Manager plugin deb package.
+	curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_64bit/session-manager-plugin.deb" -o "session-manager-plugin.deb"
+	
+2.Run the install command.
+	sudo dpkg -i session-manager-plugin.deb
+(Note : If you ever want to uninstall the plugin, run sudo dpkg -r session-manager-plugin)
+
+3.Verify the Session Manager plugin installation
+	session-manager-plugin
+		The Session Manager plugin is installed successfully. Use the AWS CLI to start a session.
+
+4.You can also test the installation by running the following command in the AWS CLI.
+	aws ssm start-session --target id-of-an-instance-you-have-permissions-to-access
+(Note : This command will work only if your Session Manager administrator has granted you the necessary IAM permissions to access the target managed node using Session Manager.)
+
+

@@ -1,0 +1,119 @@
+###docker_essentials_ch2
+
+##Stage of Containerization
+  - dockerfile(Build) > docker image (Ship) > containers (Run)
+
+##Architecture and Components of Docker
+  - Docker Client <-Results|API calls-> Docker Host <-Images-> Docker Registry
+  - Docer Client
+    - docker run	//docker cli
+    - docker pull	//docker cli
+    - client.containers.run	//docker api
+    - client.containers.list	//docker api
+  - Docker host
+    - actual machine
+      - docker demon <-> docker image <-> docker container
+  - Docker Registry
+    - store docker container
+
+##A quick look at the format of Dockerfile
+#Dockerfire
+  - A sequential set of instruction for Docker Engine
+  - Primary way of interacting with Docker
+  - Order of sequence is important!
+  - Each instruction create a layer
+  - Layers can be cached and reused by Docker
+  - Dockerfile (structure)
+     FROM
+     ARG		--> Fundamental Instructions
+
+     RUN
+     ADD | COPY
+     ENV		--> Configuration Instructions
+
+     CMD
+     ENTRYPOINT
+     EXPOSE		--> Execution Instuctions
+
+##Demo: Dockerfile - Fundamental Instructions
+#Write Your Dockerfile
+  - tree -L 1		//list directory with tree
+  - tree -l -d		//list dierctory and sub directory with tree
+  - mkdir -p CC_Docker/S2/D-1
+  - cd CC_Docker/S2/D-1
+  - vi Dockerfile
+    ARG CODE_VERSION=20.04		//ARG mean argument
+
+    FROM ubuntu:${CODE_VERSION}		//code_version with argument
+
+    RUN apt-get update -y
+
+    CMD [ bash]
+  - docker build -t img_from .		//-t for tag, img_from for image_name and  . for current images dir
+
+##Dockerfile - Configuration Instructions
+#Write Your Dockerfile(Configuration Instructions)
+  - mkdir -p CC_Docker/S2/D-{3..8} 	//Create multiple dir
+  - cd CC_Docker/S2/D-2
+  - vi Dockerfile
+    FROM ubuntu:20.04
+
+    RUN apt-get update && apt-get install -y curl \
+        && apt-get clean \
+        && apt-get rm -rf /var/lib/apt/lists/*
+
+   RUN mkdir /home/noc
+
+   ENV USER noc
+   ENV SHELL /bin/bash
+   ENV LOGNAME noc1
+
+   CMD ["bash"]
+
+  - docker images		//show docker images
+  - docker run -itd --name count_run-env img_run-en	// -i => interactive , -t => terminal, -d => detach, --name (container_name) (images_name)
+  - docker ps -a
+  - docker exec -it cont_run-env bash			//docker exec -switch (container) (CMD)
+  - pwd
+  - echo $USER						//check user
+  - echo $SHELL						//check shell
+  - echo $LOGNAME					//check logname
+
+##Dockerfile - Expose Instructins
+#Write your dockerfile (Expose Instruction)
+  - cd CC_Docker/S2/D-6
+  - vi Dockerfile
+    FROM ubuntu:20.04
+
+    RUN apt-get update && apt-get install nginx -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/list/*
+
+    EXPOSE 80
+
+    CMD ["nginx", "-g", "daemon off;"]
+
+  - docker build -t img_expose .
+  - docker run -itd --rm --name cont_expose -p 8080:80 img_expose	//--rm => remove container when stop
+
+#Write your dockerfile (Expose Instruction)
+  - cd CC_Docker/S2/D-7
+  - vi Dockerfile
+    FROM ubuntu:20.04
+
+    RUN apt-get update
+    ENV TZ=Europe/London
+    ENV DEBIAN_FRONTEND=noninteractive
+    RUN apt-get update && apt-get install -y tzdata
+    RUN apt-get install -y apache2 \
+     && apt-get clean \ 
+     && rm -rf /var/lib/apt/list/*
+
+    ENV APACHE_RUN_USER www-data
+    ENV APACHE_RUN_GROUP www-data
+    ENV APACHE_RUN_DIR /var/run/apache2
+    ENV APACHE_LOG_DIR /var/log/apache2
+    
+    EXPOSE 80
+    
+    CMD ["/usr/sbin/apache2", "-D", "FOREGROUND"]

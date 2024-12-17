@@ -1,0 +1,17 @@
+#look for your interface
+sudo iwconfig
+
+#look at your channels
+sudo iwlist {interface} channel
+
+#turn off wifi
+sudo iwconfig {interface} power off
+
+#set your desired channel
+sudo iwconfig {interface} channel {channel, ex. "23"}
+
+#set your desired frequency
+sudo iwconfig {interface} freq {frequency, ex. "5.00G"}
+
+#turn on wifi
+sudo iwconfig {interface} power on

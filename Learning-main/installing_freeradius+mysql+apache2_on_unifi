@@ -1,0 +1,148 @@
+Need environment
+-install freeradius
+-mysql
+-daloradius 	//UI
+-apacha2
+-php7.4
+
+##Install update and upgrade
+sudo apt update && sudo apt upgrade -y
+
+##install freeradius
+sudo apt policy freeradius
+sudo apt -y install freeradius freeradius-utils
+#sudo vi /etc/freeradius/3.0/clients.conf 	//for check freeradius clients.conf *
+sudo systemctl status freeradius.service	//to check running service
+sudo vi /etc/freeradius/3.0/users		//to add user
+	test-user-local    Cleartext-Password := "test"
+	                   Reply-Message := "Hello, %{User-Name}"
+sudo systemctl stop freeradius			//to check freeradius
+#you enter new terminal with ssh
+sudo freeradius -X				//listening freeradius at 1st termianl 
+radtest test-user-local test 127.0.0.1 0 testing123	//attck freeradius at 2nd termianl
+
+##Install freeradius-mysql
+sudo apt install freeradius-mysql -y
+
+sudo apt install mysql-server -y
+sudo mysql_secure_installation		//see Installing_MySQL
+sudo systemctl restart mysql.service
+mysql -u root -p
+  create database radius;
+  FLUSH PRIVILEGES;
+  show databases;
+  exit
+
+##change freeradius setup.sql
+sudo vi /etc/freeradius/3.0/mods-config/sql/main/mysql/setup.sql 	//change under paragraph
+	#SET PASSWORD FOR 'radius'@'localhost' = PASSWORD('radpass');
+	CREATE USER 'radius'@'localhost' IDENTIFIED BY 'Str0ng@pass#2';
+
+	# The server can read any table in SQL
+	GRANT ALL PRIVILEGES ON radius.* TO 'radius'@'localhost' WITH GRANT OPTION;
+
+	# The server can write to the accounting and post-auth logging table.
+	#
+	#  i.e.
+	#GRANT ALL on radius.radacct TO 'radius'@'localhost';
+	#GRANT ALL on radius.radpostauth TO 'radius'@'localhost';
+
+##push data to mysql from setup.sql
+sudo su
+mysql -u root -p radius < /etc/freeradius/3.0/mods-config/sql/main/mysql/setup.sql
+mysql -u root -p radius < /etc/freeradius/3.0/mods-config/sql/main/mysql/schema.sql
+exit
+mysql -u root -p -e "use radius;show tables;"		//check db
+exit
+ 
+sudo vi /etc/freeradius/3.0/mods-available/sql 		//chnge file of content **
+	sql {
+		#dialect = "sqlite"		//add #
+		dialect ="mysql"		//add this line
+	
+		#driver = "rlm_sql_null"	//add #
+        	driver = "rlm_sql_${dialect}"	//remove #
+		
+	        mysql {
+                # If any of the files below are set, TLS encryption is enabled
+                #tls {									//add #
+                #       ca_file = "/etc/ssl/certs/my_ca.crt"				//add #
+                #       ca_path = "/etc/ssl/certs/"					//add #
+                #       certificate_file = "/etc/ssl/certs/private/client.crt"		//add #
+                #       private_key_file = "/etc/ssl/certs/private/client.key"		//add #
+                #       cipher = "DHE-RSA-AES256-SHA:AES128-SHA"			//add #
+
+                #       tls_required = yes						//add #
+                #       tls_check_cert = no						//add #
+                #       tls_check_cert_cn = no						//add #
+                #}									//add #
+		
+		        	server = "localhost"					//remove #
+	        		port = 3306							//remove #
+ 		       	login = "radius"						//remove #
+        			password = "your_password"				//remove #
+
+		logfile = ${logdir}/sqllog.sql						//remove #
+
+		read_clients = yes							//remove #
+
+			
+
+sudo ln -s /etc/freeradius/3.0/mods-available/sql /etc/freeradius/3.0/mods-enabled/sql 	//create symbolic link
+sudo ls -alh /etc/freeradius/3.0/mods-enabled				//show file list and user
+sudo chown -R freerad:freerad /etc/freeradius/3.0/mods-enabled/sql	//change owner root to freeradius
+sudo ls -alh /etc/freeradius/3.0/mods-enabled           		//show file list and user
+sudo vi /etc/freeradius/3.0/sites-available/default			//remove "-" from authorize's and accounting's  sql
+sudo vi /etc/freeradius/3.0/sites-available/inner-tunnel		//remove "-" from authorize's sql
+sudo systemctl restart freeradius
+sudo systemctl status freeradius
+
+sudo apt -y install apache2
+sudo systemctl status apache2
+	*test the web ser with your ip*
+
+sudo apt -y install php libapache2-mod-php php-{gd,common,mail,mail-mime,mysql,pear,db,mbstring,xml,curl}
+sudo vi /var/www/html/test.php
+	<?php phpinfo() ; ?>
+sudo chown -R www-data:www-data /var/www/html/test.php
+        *test the web ser with your ip/test.php*
+sudo rm /var/www/html/test.php
+
+sudo apt -y install wget unzip
+wget https://github.com/lirantal/daloradius/archive/master.zip
+unzip master.zip
+mv daloradius-master daloradius
+cd daloradius
+mysql -u root -p radius < contrib/db/fr2-mysql-daloradius-and-freeradius.sql
+mysql -u root -p radius < contrib/db/mysql-daloradius.sql
+cd
+sudo mv daloradius /var/www/html/
+sudo chown -R www-data:www-data /var/www/html/daloradius/
+sudo cp /var/www/html/daloradius/library/daloradius.conf.php.sample /var/www/html/daloradius/library/daloradius.conf.php
+sudo chmod 664 /var/www/html/daloradius/library/daloradius.conf.php
+sudo vim /var/www/html/daloradius/library/daloradius.conf.php
+	$configValues['FREERADIUS_VERSION'] = '3';
+	$configValues['CONFIG_DB_ENGINE'] = 'mysqli';
+	$configValues['CONFIG_DB_HOST'] = 'localhost';
+	$configValues['CONFIG_DB_PORT'] = '3306';
+	$configValues['CONFIG_DB_USER'] = 'radius';
+	$configValues['CONFIG_DB_PASS'] = 'your_password';
+	$configValues['CONFIG_DB_NAME'] = 'radius';
+sudo ls -l /var/www/html/daloradius/library/daloradius.conf.php
+	-rw-rw-r-- 1 root root 6391 Jan 27 19:17 /var/www/html/daloradius/library/daloradius.conf.php
+
+sudo vi /etc/apache2/sites-available/000-default.conf
+DocumentRoot /var/www/html/daloradius/
+sudo systemctl restart freeradius.service apache2
+
+sudo ufw enable
+sudo ufw allow 1812
+sudo ufw allow 1813
+sudo ufw allow 80
+sudo ufw allow 22
+
+
+
+
+
+

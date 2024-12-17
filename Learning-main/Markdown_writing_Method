@@ -1,0 +1,28 @@
+Basic Markdown Formatting
+
+Headings
+# Heading 1
+## Heading 2
+### Heading 3
+
+Text
+*italic*
+**bold**
+***bold-italic***
+[link](https://example.com)
+
+Images
+![m'lady](https://i.imgur.com/v8IVDka.jpg)
+
+Lists
+* Milk
+* Bread
+    * Wholegrain
+* Butter
+	(or)
+1. Tidy the kitchen
+2. Prepare ingredients
+3. Cook delicious things	//You can also create nested lists; just indent a line with 4 spaces and it will be nested under the line above.   
+
+
+

@@ -1,0 +1,70 @@
+##Chapter 2 Container Orchestration
+##Introduction
+  a fault-tolerant and scalable solution
+  - a single controller/management unit connecting multiple nodes together
+
+##Learning Objectives
+  By the end of this chapter, you should be able to:
+  - Define the concept of container orchestration.
+  - Explain the benefits of using container orchestration.
+  - Discuss different container orchestration options.
+  - Discuss different container orchestration deployment options.
+
+##What Are Containers?
+  Containers
+  - Containers are an application-centric method to deliver high-performing, scalable applications on any infrastructure of your choice. 
+  - Containers encapsulate microservices and their dependencies but do not run them directly. Containers run container images.
+  Microservices
+  - Microservices are lightweight applications written in various modern programming languages, with specific dependencies, libraries and environmental requirements.
+  Container Image
+  - container image bundles the application along with its runtime, libraries, and dependencies, and it represents the source of a container deployed to offer an isolated executable environment for the application.
+
+##What Is Container Orchestration?
+  In Development (Dev) environments, running containers on a single host for development and testing of applications may be an option. However, when migrating to Quality Assurance (QA) and Production (Prod) environments, that is no longer a viable option because the applications and services need to meet specific requirements:
+  - Fault-tolerance
+  - On-demand scalability
+  - Optimal resource usage
+  - Auto-discovery to automatically discover and communicate with each other
+  - Accessibility from the outside world
+  - Seamless updates/rollbacks without any downtime.
+  Container Orcherstration
+  - Container orchestrators are tools which group systems together to form clusters where containers' deployment and management is automated at scale while meeting the requirements mentioned above.
+  
+##Container Orchestrators
+  Amazon Elastic Container Service
+  - Amazon Elastic Container Service (ECS) is a hosted service provided by Amazon Web Services (AWS) to run Docker containers at scale on its infrastructure.
+  Azure Container Instances
+  - Azure Container Instance (ACI) is a basic container orchestration service provided by Microsoft Azure.
+  Azure Service Fabric
+  - Azure Service Fabric is an open source container orchestrator provided by Microsoft Azure.
+  Kubernetes
+  - Kubernetes is an open source orchestration tool, originally started by Google, today part of the Cloud Native Computing Foundation (CNCF) project.
+  Marathon
+  - Marathon is a framework to run containers at scale on Apache Mesos.
+  Nomad
+  - Nomad is the container and workload orchestrator provided by HashiCorp.
+  Docker Swarm
+  - Docker Swarm is a container orchestrator provided by Docker, Inc. It is part of Docker Engine.
+
+##Why Use Container Orchestrators?
+  orchestrators make things much easier for operators especially when it comes to managing hundreds and thousands of containers running on a global infrastructure.
+  Most container orchestrators can:
+  - Group hosts together while creating a cluster
+  - Schedule containers to run on hosts in the cluster based on resources availability
+  - Enable containers in a cluster to communicate with each other regardless of the host they are deployed to in the cluster
+  - Bind containers and storage resources
+  - Group sets of similar containers and bind them to load-balancing constructs to simplify access to containerized
+  - applications by creating a level of abstraction between the containers and the user
+  - Manage and optimize resource usage
+  - Allow for implementation of policies to secure access to applications running inside containers.
+  
+##Where to Deploy Container Orchestrators?
+  Most container orchestrators can be deployed on the infrastructure of our choice - on bare metal, Virtual Machines, on-premises, on public and hybrid cloud. Kubernetes, for example, can be deployed on a workstation, with or without a local hypervisor such as Oracle VirtualBox, inside a company's data center, in the cloud on AWS Elastic Compute Cloud (EC2) instances, Google Compute Engine (GCE) VMs, DigitalOcean Droplets, OpenStack, etc.
+
+##Learning Objectives (Review)
+  You should now be able to:
+  - Define the concept of container orchestration.
+  - Explain the benefits of using container orchestration.
+  - Discuss different container orchestration options.
+  - Discuss different container orchestration deployment options.
+  
