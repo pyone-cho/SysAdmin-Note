@@ -137,6 +137,11 @@ git branch -m old_name new_name
 git branch -d name
 
 -------------------------------------------
+##Git commit delete
+git reset --soft HEAD~1
+git push origin +main --force
+
+-------------------------------------------
 
 ##Ignore local file and folder form Git Repo
 touch .gitignore
