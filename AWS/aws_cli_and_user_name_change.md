@@ -1,37 +1,37 @@
 
-#Install awscli
+# Install awscli
 sudo apt install awscli
 	https://linuxhint.com/install_aws_cli_ubuntu/
 	
-#Check aws version
+# Check aws version
 aws --version
 
-#awscli configure
+# awscli configure
 aws configure
 AWS Access Key ID [None]:
 AWS Secret Access Key [None]:
 Default region name [None]: ap-southeast-1
 Default output format [None]: json
 
-#show instance status
+# show instance status
 aws ec2 describe-instances
 
-#Show IAM Users
+# Show IAM Users
 aws iam list-users
 
-#Change User Name
+# Change User Name
 aws iam update-user --user-name old_name --new-user-name new_name
 
-#Show ls
+# Show ls
 aws s3 ls
 
-#Download AWS S3
+# Download AWS S3
 aws s3 cp s3:	//bucket_name . --recursive
 
-#Upload AWS S3
+# Upload AWS S3
 aws s3 cp . s3://bucket_name/ --recursive
 
-#Remove aws cli config
+# Remove aws cli config
 rm -v ~/.aws/config ~/.aws/credentials
 
 
