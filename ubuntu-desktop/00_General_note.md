@@ -1,0 +1,4 @@
+- top 10 insane linux app you should be use in 2025
+	- {{video https://youtu.be/RTwOvogeEVs}}
+-
+	-
