@@ -13,7 +13,7 @@ ssh-keygen -t ed25519
 `sudo su - <name>`
 
 ### Create User Credential in server
-`mkdir .ssh && chmod 700 .ssh && touch .ssh/authorized_keys && chmod 600 .ssh/authorized_keys && vim .ssh/autorized_keys`
+`mkdir .ssh && chmod 700 .ssh && touch .ssh/authorized_keys && chmod 600 .ssh/authorized_keys && vim .ssh/authorized_keys`
 Note : copy public ssh keys form local and paste autorized_keys
 
 ### Add New User to sudoer 
