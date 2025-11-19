@@ -1,0 +1,60 @@
+# exsi vm HDD Extension
+
+Step 2: Verify Disk Space in Ubuntu
+Log in to your Ubuntu VM and open a terminal. Run:
+sudo lsblk
+The output will show the disks and partitions:
+* sda is your primary disk.
+* sda3 is the partition where LVM resides.
+* ubuntu--vg-ubuntu--lv is the logical volume.
+At this point, the additional space may not appear under sda3. Let’s rescan the disk.
+
+Step 3: Rescan the Disk to Detect New Space
+To rescan the disk without rebooting, run:
+echo 1 | sudo tee /sys/class/block/sda/device/rescan
+Recheck the disk layout:
+sudo lsblk
+You should see the new disk size reflected under sda.
+
+Step 4: Expand the Partition Using growpart
+To extend sda3 (the partition), use the growpart tool. Install it if not already present:
+sudo apt update
+sudo apt install cloud-guest-utils
+Now extend the third partition:
+sudo growpart /dev/sda 3
+Verify that sda3 now occupies the free space:
+sudo lsblk
+
+Step 5: Resize the Physical Volume (PV)
+Since the partition is extended, the Physical Volume (PV) must also be resized:
+sudo pvresize /dev/sda3
+Confirm the free space in your volume group:
+sudo vgs
+This command will show the free space available in your ubuntu-vg volume group.
+
+Step 6: Extend the Logical Volume (LV)
+Now extend the logical volume (ubuntu--vg-ubuntu--lv) using the free space:
+sudo lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+This command allocates all available free space to the logical volume.
+
+Step 7: Resize the Filesystem
+Finally, resize the filesystem so that it can use the newly allocated space.
+* If you are using the ext4 filesystem:
+sudo resize2fs /dev/ubuntu-vg/ubuntu-lv
+* If you are using the XFS filesystem:
+sudo xfs_growfs /
+
+Step 8: Verify the Changes
+To confirm the root partition has been expanded, run:
+df -h /
+The output will show the updated size of your root filesystem.
+Conclusion
+You’ve successfully expanded the root partition on your Ubuntu VM in VMware ESXi! This method ensures zero data loss and minimal downtime. As your business or application grows, you can repeat these steps to manage storage efficiently.
+At ehostingserver.com, we provide reliable web hosting solutions, including virtual machine management tips like this. If you need expert assistance managing your cloud infrastructure or expanding resources, feel free to contact us.
+Share this guide to help others streamline their VM management!
+
+
+
+
+REF:
+https://www.ehostingserver.com/how-to-expand-root-partition-on-ubuntu-vm-in-vmware-esxi-a-step-by-step-guide/
